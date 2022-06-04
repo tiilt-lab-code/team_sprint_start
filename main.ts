@@ -9,7 +9,9 @@ datalogger.onLogFull(function () {
 })
 radio.onReceivedString(function (receivedString) {
     if (receivedString == "full") {
-        basic.showString("X")
+        if (paired == 0) {
+            basic.showString("X")
+        }
     } else if (receivedString == "start") {
         music.playTone(988, music.beat(BeatFraction.Half))
         received_start = 1
