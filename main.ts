@@ -61,9 +61,7 @@ basic.forever(function () {
             radio.sendString("movement")
             end_time = control.millis()
             datalogger.log(datalogger.createCV("reaction", end_time - start_time))
-            music.playTone(175, music.beat(BeatFraction.Half))
             received_set = 0
-            basic.showNumber(end_time - start_time)
             radio.sendValue(lane, end_time - start_time)
         }
     }
