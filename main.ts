@@ -42,8 +42,9 @@ basic.forever(function () {
 control.inBackground(function () {
     if (received_set == 1) {
         let list: number[] = []
-        if (Math.abs(input.acceleration(Dimension.X) - list[-1]) >= 500) {
+        if (Math.abs(input.acceleration(Dimension.Strength) - list[-1]) >= 500) {
             radio.sendString("movement")
+            music.playTone(262, music.beat(BeatFraction.Whole))
         }
     }
 })
@@ -54,5 +55,6 @@ loops.everyInterval(200, function () {
             accel_arry.shift()
         }
         accel_arry.push(c_accel)
+        datalogger.log(datalogger.createCV("accel", c_accel))
     }
 })
