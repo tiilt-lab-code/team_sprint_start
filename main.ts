@@ -1,8 +1,19 @@
+datalogger.onLogFull(function () {
+    basic.showLeds(`
+        # # # # #
+        # # # # #
+        # # # # #
+        # # # # #
+        # # # # #
+        `)
+})
 radio.onReceivedString(function (receivedString) {
     if (receivedString == "full") {
         basic.showString("X")
     } else if (receivedString == "start") {
+        music.playTone(988, music.beat(BeatFraction.Half))
         received_start = 1
+        start_time = control.millis()
         datalogger.log(datalogger.createCV("accel", -2))
     } else if (receivedString == "set") {
         received_set = 1
@@ -25,10 +36,12 @@ input.onLogoEvent(TouchButtonEvent.Pressed, function () {
         received_start = 0
     }
 })
+let end_time = 0
 let c_accel = 0
 let p_accel = 0
 let received_set = 0
 let received_start = 0
+let start_time = 0
 let lane = ""
 let paired = 0
 radio.setGroup(11)
@@ -39,19 +52,18 @@ basic.showString("pair")
 input.setAccelerometerRange(AcceleratorRange.FourG)
 datalogger.mirrorToSerial(true)
 datalogger.includeTimestamp(FlashLogTimeStampFormat.Milliseconds)
+start_time = 0
 basic.forever(function () {
-	
-})
-loops.everyInterval(200, function () {
     if (received_set == 1) {
         p_accel = c_accel
         c_accel = input.acceleration(Dimension.Strength)
-        datalogger.log(datalogger.createCV("p_accel", p_accel))
-        datalogger.log(datalogger.createCV("accel", c_accel))
         if (Math.abs(c_accel - p_accel) >= 500) {
             radio.sendString("movement")
+            end_time = control.millis()
+            datalogger.log(datalogger.createCV("reaction", end_time - start_time))
             music.playTone(175, music.beat(BeatFraction.Half))
             received_set = 0
+            basic.showNumber(end_time - start_time)
         }
     }
 })
