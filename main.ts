@@ -71,7 +71,8 @@ basic.forever(function () {
             if (received_start == 0) {
                 music.playMelody("C5 C5 A A F F D D ", 180)
                 basic.showString("DQ")
-                radio.sendValue(lane, 999999)
+                radio.sendValue(lane, -1)
+                datalogger.log(datalogger.createCV("reaction", -1))
             } else {
                 datalogger.log(datalogger.createCV("reaction", c_reaction_time))
                 radio.sendValue(lane, c_reaction_time)
