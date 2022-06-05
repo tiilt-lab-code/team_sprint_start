@@ -68,11 +68,13 @@ basic.forever(function () {
             radio.sendString("movement")
             end_time = control.millis()
             c_reaction_time = end_time - start_time
-            datalogger.log(datalogger.createCV("reaction", c_reaction_time))
-            radio.sendValue(lane, c_reaction_time)
             if (received_start == 0) {
                 music.playMelody("C5 C5 A A F F D D ", 180)
                 basic.showString("DQ")
+                radio.sendValue(lane, 999999)
+            } else {
+                datalogger.log(datalogger.createCV("reaction", c_reaction_time))
+                radio.sendValue(lane, c_reaction_time)
             }
             received_set = 0
         }
