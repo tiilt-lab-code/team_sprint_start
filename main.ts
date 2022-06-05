@@ -21,10 +21,10 @@ radio.onReceivedString(function (receivedString) {
         start_time = control.millis()
         datalogger.log(datalogger.createCV("accel", -2))
     } else if (receivedString == "set") {
+        received_start = 0
         received_set = 1
         p_accel = input.acceleration(Dimension.Strength)
         c_accel = input.acceleration(Dimension.Strength)
-        start_time = 50000
         datalogger.log(datalogger.createCV("accel", -1))
     }
 })
@@ -46,9 +46,9 @@ let end_time = 0
 let c_accel = 0
 let p_accel = 0
 let received_set = 0
+let start_time = 0
 let received_start = 0
 let c_reaction_time = 0
-let start_time = 0
 let lane = ""
 let paired = 0
 radio.setGroup(11)
@@ -58,7 +58,6 @@ lane = ""
 basic.showString("pair")
 input.setAccelerometerRange(AcceleratorRange.FourG)
 datalogger.includeTimestamp(FlashLogTimeStampFormat.Milliseconds)
-start_time = 50000
 datalogger.log(datalogger.createCV("accel", -3))
 c_reaction_time = 0
 basic.forever(function () {
@@ -68,14 +67,14 @@ basic.forever(function () {
         if (Math.abs(c_accel - p_accel) >= 500) {
             radio.sendString("movement")
             end_time = control.millis()
-            datalogger.log(datalogger.createCV("reaction", end_time - start_time))
-            received_set = 0
-            radio.sendValue(lane, end_time - start_time)
             c_reaction_time = end_time - start_time
-            if (end_time - start_time < 0) {
-                basic.showString("DQ")
+            datalogger.log(datalogger.createCV("reaction", c_reaction_time))
+            radio.sendValue(lane, c_reaction_time)
+            if (received_start == 0) {
                 music.playMelody("C5 C5 A A F F D D ", 180)
+                basic.showString("DQ")
             }
+            received_set = 0
         }
     }
 })
