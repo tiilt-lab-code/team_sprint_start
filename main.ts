@@ -7,6 +7,9 @@ datalogger.onLogFull(function () {
         # # # # #
         `)
 })
+input.onButtonPressed(Button.A, function () {
+    basic.showNumber(c_reaction_time)
+})
 radio.onReceivedString(function (receivedString) {
     if (receivedString == "full") {
         if (paired == 0) {
@@ -44,6 +47,7 @@ let c_accel = 0
 let p_accel = 0
 let received_set = 0
 let received_start = 0
+let c_reaction_time = 0
 let start_time = 0
 let lane = ""
 let paired = 0
@@ -56,6 +60,7 @@ input.setAccelerometerRange(AcceleratorRange.FourG)
 datalogger.includeTimestamp(FlashLogTimeStampFormat.Milliseconds)
 start_time = 50000
 datalogger.log(datalogger.createCV("accel", -3))
+c_reaction_time = 0
 basic.forever(function () {
     if (received_set == 1) {
         p_accel = c_accel
@@ -66,6 +71,7 @@ basic.forever(function () {
             datalogger.log(datalogger.createCV("reaction", end_time - start_time))
             received_set = 0
             radio.sendValue(lane, end_time - start_time)
+            c_reaction_time = end_time - start_time
             if (end_time - start_time < 0) {
                 basic.showString("DQ")
                 music.playMelody("C5 C5 A A F F D D ", 180)
